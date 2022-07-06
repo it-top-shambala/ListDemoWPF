@@ -28,14 +28,18 @@
                        Content="Item"
                        Style="{StaticResource StyleLabel}"/>
                 <TextBox x:Name="InputItem"
-                         Style="{StaticResource StyleInput}"/>
+                         Style="{StaticResource StyleInput}"
+                         TextChanged="InputItem_OnTextChanged"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="ButtonDelete"
                         Content="Delete"
-                        Style="{StaticResource StyleButtonDelete}"/>
+                        IsEnabled="False"
+                        Style="{StaticResource StyleButtonDelete}"
+                        Click="ButtonDelete_OnClick"/>
                 <Button x:Name="ButtonAdd"
                         Content="Add"
+                        IsEnabled="False"
                         Style="{StaticResource StyleButtonAdd}"
                         Click="ButtonAdd_OnClick"/>
             </StackPanel>
