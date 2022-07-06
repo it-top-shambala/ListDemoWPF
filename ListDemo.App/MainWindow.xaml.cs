@@ -1,25 +1,35 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ListDemo.App
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private readonly List<string> _list;
+        public ObservableCollection<string> Collection { get; set; }
+
+        private string _selectedItem;
+        public string SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (value == _selectedItem) return;
+
+                _selectedItem = value;
+                OnPropertyChanged(nameof(SelectedItem));
+            }
+        }
+        
         
         public MainWindow()
         {
-            _list = new List<string> {"first", "second", "last"};
+            Collection = new ObservableCollection<string>() {"first", "second", "last"};
             
             InitializeComponent();
-
-            List.ItemsSource = _list;
-        }
-
-        private void List_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            InputItem.Text = (string)((ListBox)sender).SelectedItem;
         }
 
         private void ButtonAdd_OnClick(object sender, RoutedEventArgs e)
@@ -28,10 +38,7 @@ namespace ListDemo.App
 
             if (string.IsNullOrWhiteSpace(input)) return;
             
-            _list.Add(InputItem.Text);
-            
-            List.ItemsSource = null;
-            List.ItemsSource = _list;
+            Collection.Add(InputItem.Text);
         }
 
         private void ButtonDelete_OnClick(object sender, RoutedEventArgs e)
@@ -40,24 +47,14 @@ namespace ListDemo.App
 
             if (string.IsNullOrWhiteSpace(input)) return;
 
-            if(!_list.Remove(input)) return;
-            
-            List.ItemsSource = null;
-            List.ItemsSource = _list;
+            Collection.Remove(input);
         }
 
-        private void InputItem_OnTextChanged(object sender, TextChangedEventArgs e)
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            if (string.IsNullOrWhiteSpace(InputItem.Text))
-            {
-                ButtonAdd.IsEnabled = false;
-                ButtonDelete.IsEnabled = false;
-            }
-            else
-            {
-                ButtonAdd.IsEnabled = true;
-                ButtonDelete.IsEnabled = true;
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
